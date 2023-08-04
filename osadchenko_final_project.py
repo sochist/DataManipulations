@@ -6,7 +6,7 @@ from airflow import DAG
 from airflow.operators.python import PythonOperator
 from airflow.providers.sqlite.operators.sqlite import SqliteOperator
 import logging
-import orjson, zipfile, pandas
+import orjson, zipfile, pandas, asyncio
 
 """
 DAG Составление ТОП-10 наиболее востребованных ключевых навыков middle python developer в компаниях, занимающихся деятельностью в сфере телекоммуникаций.
@@ -107,7 +107,7 @@ def load_vacancyes(SH):
                         logger.info(f'Запрос {vac_json["employer"]["url"]} не завершен. {company_result.reason}')
             else:
                 logger.info(f'Запрос {request_count}: {vacancy["url"]} не завершен. {vac_result.reason}')
-            time.sleep(0.4)
+            asyncio.sleep(0.4)
             request_count +=1
         api_params['page'] +=1
         result = requests.get(config["API_URLS"]["VacanciesURL"], api_params)
